@@ -56,14 +56,8 @@ jobs:
             echo "changes_exist=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Debug PR and changes existence
-        run: |
-          echo "PR exists: ${{ steps.pr.outputs.pr_exists }}"
-          echo "Changes exist: ${{ steps.changes.outputs.changes_exist }}"
-          echo "PR exists && Changes exist: ${{ steps.pr.outputs.pr_exists }} == 'false' && ${{ steps.changes.outputs.changes_exist }} == 'true'"
-
       - name: Create Pull Request to main
-        if: ${{ steps.pr.outputs.pr_exists }} == 'false' && ${{ steps.changes.outputs.changes_exist }} == 'true'
+        if: ${{ steps.pr.outputs.pr_exists == 'false' }} && ${{ steps.changes.outputs.changes_exist == 'true' }}
         shell: bash
         run: |
           git config user.name "github-actions"
