@@ -130,6 +130,10 @@ jobs:
       - name: Install build tools
         run: pip install build
 
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.new_version }}\"/" pyproject.toml
+
       - name: Build package
         run: python -m build
 
