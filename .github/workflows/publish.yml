@@ -74,11 +74,6 @@ jobs:
           echo "Version is $NEW_VERSION"
           echo "Suffix is $SUFFIX"
           echo "Tag name is $TAG_NAME"
-          
-          if ! [[ "$new_version" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z0-9.-]+)?$ ]]; then
-            echo "Invalid version: $new_version"
-            exit 1
-          fi
 
   check-version:
     name: Check Last Published Version
@@ -137,6 +132,11 @@ jobs:
 
       - name: Update version in pyproject.toml
         run: |
+          if ! [[ "${{ needs.details.outputs.new_version }}" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z0-9.-]+)?$ ]]; then
+            echo "Invalid version: $new_version"
+            exit 1
+          fi
+          
           sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.new_version }}\"/" pyproject.toml
 
       - name: Build package
