@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "contigion-utils"
+      - "contigion-utils/**"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
