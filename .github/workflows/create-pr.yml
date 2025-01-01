@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: Create Pull Request to main
-        if: ${{ steps.pr.outputs.pr_exists }} == 'false' && ${{ steps.changes.outputs.changes_exist }}. == 'true'
+        if: ${{ steps.pr.outputs.pr_exists }} == 'false' && ${{ steps.changes.outputs.changes_exist }} == 'true'
         shell: bash
         run: |
           git config user.name "github-actions"
