@@ -132,12 +132,12 @@ jobs:
 
       - name: Update version in pyproject.toml
         run: |
-          if ! [[ "${{ needs.details.outputs.new_version }}" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z0-9.-]+)?$ ]]; then
-            echo "Invalid version: $new_version"
+          if ! [[ "${{ needs.details.outputs.tag_name }}" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z0-9.-]+)?$ ]]; then
+            echo "Invalid version: tag_name"
             exit 1
           fi
           
-          sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.new_version }}\"/" pyproject.toml
+          sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.tag_name }}\"/" pyproject.toml
 
       - name: Build package
         run: python -m build
