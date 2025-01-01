@@ -130,6 +130,10 @@ jobs:
       - name: Install build tools
         run: pip install build
 
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/^version = \".*\"/version = \"${{ needs.details.outputs.new_version }}\"/" pyproject.toml
+
       - name: Build package
         run: python -m build
 
@@ -139,7 +143,7 @@ jobs:
   changelog:
     name: Generate Changelog
     runs-on: ${{ vars.OS }}
-    needs: pylint
+    needs: [ pylint, publish ]
 
     steps:
       - name: Install Node.js
@@ -170,7 +174,7 @@ jobs:
 
   tag:
     name: Create Tag
-    needs: [ publish, changelog, details ]
+    needs: [ changelog, details ]
     runs-on: ${{ vars.OS }}
 
     steps:
