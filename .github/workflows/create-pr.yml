@@ -45,7 +45,7 @@ jobs:
         run: |
           git fetch origin main
           git fetch origin ${{ env.BRANCH_NAME }}
-      
+          
           CHANGES=$(git diff --name-only origin/main origin/${{ env.BRANCH_NAME }})
       
           if [ -z "$CHANGES" ]; then
@@ -55,6 +55,11 @@ jobs:
             echo "Changes found main -> ${{ env.BRANCH_NAME}}"
             echo "changes_exist=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Debug PR and changes existence
+        run: |
+          echo "PR exists: ${{ steps.pr.outputs.pr_exists }}"
+          echo "Changes exist: ${{ steps.changes.outputs.changes_exist }}"
 
       - name: Create Pull Request to main
         if: ${{ steps.pr.outputs.pr_exists }} == 'false' && ${{ steps.changes.outputs.changes_exist }} == 'true'
