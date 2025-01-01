@@ -13,8 +13,7 @@ jobs:
     runs-on: ${{ vars.OS }}
 
     outputs:
-      pr_exists: ${{ steps.create-pr.pr.pr_exists }}
-      changes_exist: ${{ steps.create-pr.changes.changes_exist }}
+      create_pr: ${{ steps.exists.create_pr }}
 
     steps:
       - name: Checkout code
@@ -26,23 +25,20 @@ jobs:
           BRANCH_NAME=$(echo "${GITHUB_REF}" | sed 's/refs\/heads\///')
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Check if PR exists
-        id: pr
+      - name: Check for changes and if PR exists
+        id: exists
         shell: bash
         run: |
           PR_EXISTS=$(gh pr list --state open --head "${{ env.BRANCH_NAME }}" --json number -q '.[].number')
           if [ -z "$PR_EXISTS" ]; then
             echo "Creating PR to main."
-            echo "pr_exists=false" >> "$GITHUB_OUTPUT"
+            echo "create_pr=true" >> "$GITHUB_OUTPUT"
           else
             echo "PR already exists, skipping PR creation."
-            echo "pr_exists=true" >> "$GITHUB_OUTPUT"
+            echo "create_pr=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-
-      - name: Check for changes in branch
-        id: changes
-        shell: bash
-        run: |
+          
           git fetch origin main
           git fetch origin ${{ env.BRANCH_NAME }}
           
@@ -50,14 +46,11 @@ jobs:
       
           if [ -z "$CHANGES" ]; then
             echo "No changes found, skipping PR creation."
-            echo "changes_exist=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "Changes found main -> ${{ env.BRANCH_NAME}}"
-            echo "changes_exist=true" >> "$GITHUB_OUTPUT"
+            echo "create_pr=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request to main
-        if: ${{ steps.pr.outputs.pr_exists == 'false' }} && ${{ steps.changes.outputs.changes_exist == 'true' }}
+        if: ${{ steps.exists.outputs.pr_exists }} == 'true'
         shell: bash
         run: |
           git config user.name "github-actions"
@@ -67,7 +60,7 @@ jobs:
           gh pr create --base main --head "${{ env.BRANCH_NAME }}" --title "$PR_TITLE" --body "This PR is automatically created from the release branch to the main branch."
 
   pylint:
-    if: ${{ needs.create-pr.outputs.pr_exist }} == 'false' && ${{ needs.create-pr.outputs.changes_exist }} == 'true'
+    if: ${{ needs.create-pr.outputs.create_pr }} == 'true'
     name: Pylint
     needs: create-pr
     runs-on: ${{ vars.OS }}
