@@ -51,3 +51,4 @@ def save_plot(filename, plot):
         plot.savefig(f'{filename}.png')
     except Exception as e:
         print_error(f'Error saving plot to {filename}.png: {e}')
+
