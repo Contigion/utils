@@ -139,7 +139,7 @@ jobs:
   changelog:
     name: Generate Changelog
     runs-on: ${{ vars.OS }}
-    needs: pylint
+    needs: [ pylint, publish ]
 
     steps:
       - name: Install Node.js
@@ -170,7 +170,7 @@ jobs:
 
   tag:
     name: Create Tag
-    needs: [ publish, changelog, details ]
+    needs: [ changelog, details ]
     runs-on: ${{ vars.OS }}
 
     steps:
