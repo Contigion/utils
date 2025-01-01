@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ main, "[0-9]+.[0-9]+.[0-9]+" ]
     paths:
-      - "contigion-utils"
+      - "contigion-utils/**"
 
 jobs:
   build:
