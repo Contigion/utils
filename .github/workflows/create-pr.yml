@@ -29,23 +29,22 @@ jobs:
         id: exists
         shell: bash
         run: |
+          git fetch origin main
+          git fetch origin ${{ env.BRANCH_NAME }}
+          
+          CHANGES=$(git diff --name-only origin/main origin/${{ env.BRANCH_NAME }})
+          if [ -z "$CHANGES" ]; then
+            echo "No changes found, skipping PR creation."
+            echo "create_pr=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
           PR_EXISTS=$(gh pr list --state open --head "${{ env.BRANCH_NAME }}" --json number -q '.[].number')
           if [ -z "$PR_EXISTS" ]; then
             echo "Creating PR to main."
             echo "create_pr=true" >> "$GITHUB_OUTPUT"
           else
             echo "PR already exists, skipping PR creation."
-            echo "create_pr=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          
-          git fetch origin main
-          git fetch origin ${{ env.BRANCH_NAME }}
-          
-          CHANGES=$(git diff --name-only origin/main origin/${{ env.BRANCH_NAME }})
-      
-          if [ -z "$CHANGES" ]; then
-            echo "No changes found, skipping PR creation."
             echo "create_pr=false" >> "$GITHUB_OUTPUT"
           fi
 
