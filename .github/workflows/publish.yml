@@ -39,9 +39,9 @@ jobs:
     runs-on: ${{ vars.OS }}
 
     outputs:
-      new_version: ${{ steps.release.outputs.new_version }}
-      suffix: ${{ steps.release.outputs.suffix }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
+      new_version: ${{ steps.values.outputs.new_version }}
+      suffix: ${{ steps.values.outputs.suffix }}
+      tag_name: ${{ steps.values.outputs.tag_name }}
 
     steps:
       - name: Checkout code
@@ -50,6 +50,7 @@ jobs:
           fetch-depth: 0
 
       - name: Extract tag name
+        id: values
         shell: bash
         run: |
           PR_BRANCH=$(curl -s \
