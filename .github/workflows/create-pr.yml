@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           git fetch origin main
-          git fetch origin ${{ env.BRANCH_NAME }})
+          git fetch origin ${{ env.BRANCH_NAME }}
       
           CHANGES=$(git diff --name-only origin/main...origin/${{ env.BRANCH_NAME }})
       
