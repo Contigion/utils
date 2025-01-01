@@ -4,9 +4,17 @@ on:
   push:
     branches: ["*"]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PACKAGE_NAME: "contigion-utils"
+  OWNER: "Contigion"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ env.PACKAGE_NAME }}
     permissions:
       id-token: write
       contents: read
