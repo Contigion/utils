@@ -10,12 +10,11 @@ authors = [
     { name = "Contigion", email = "contigion@gmail.com" }
 ]
 readme = "README.md"
-dependencies = [
-]
+dependencies = []
 classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
 
 [tool.setuptools]
-packages = ["contigion-utils"]
+packages = ["contigion_utils"]
